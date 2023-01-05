@@ -1,10 +1,62 @@
+import React from 'react';
+
 import './App.scss';
 
 import Base09 from './components/base09';
 import Base11 from './components/base11';
+import Chapter2Less2 from './components/chapter2Less2';
+import Chapter2Less8 from './components/chapter2Less8/chapter2Less8';
+
+
+const adjectivesArr = [
+  "абсолютный",
+  "адский",
+  "азартный",
+  "активный",
+  "ангельский",
+  "астрономический",
+  "баснословный",
+  "безбожный",
+  "безбрежный",
+  "безвозвратный",
+  "безграничный",
+  "бездонный",
+  "бездушный",
+  "безжалостный",
+  "замечательно",
+  "замечательный",
+  "записной",
+  "запредельный",
+  "заядлый",
+  "звериный",
+  "зверский",
+  "зеленый",
+  "злой",
+  "злостный",
+  "значительный",
+  "неоспоримый",
+  "неотразимый",
+  "неоценимый",
+  "непередаваемый"
+];
+
+const nounsArr = [
+  "лгун",
+  "день",
+  "конь",
+  "олень",
+  "человек",
+  "программист",
+  "ребёнок",
+  "конец",
+  "город",
+  "дурак"
+];
+
+
+
 
 function App() {
-  
   //base09
   function montoToStr(num) {
     return num > 12 || num < 1
@@ -16,13 +68,30 @@ function App() {
   const current = new Date(2021, 5, 22);
   const date = `Дата регистрации: ${current.getDate()} ${montoToStr(current.getMonth())} ${current.getFullYear()}`;
 
+  
+  //chapter2Less8
+  const [phrasesArr, setPhrasesArr] = React.useState([]);
 
+  const onClickGenPhrase = () => {
+    const currentAdj1 = adjectivesArr[(Math.floor(Math.random() * adjectivesArr.length))];
+    const currentAdj2 = adjectivesArr[(Math.floor(Math.random() * adjectivesArr.length))];
+    const currentNoun = nounsArr[(Math.floor(Math.random() * nounsArr.length))];
+    const currentPhrase = `${currentAdj1} ${currentAdj2} ${currentNoun}`;
+    setPhrasesArr((prev) => [...prev, currentPhrase]);
+  }
 
+  const clearPhrases = () => {
+    setPhrasesArr([]);
+  }
+
+  
 
   return (
     <div className="App">
       <Base09 name="Вася Пупкин" registredAt={date}></Base09>
       <Base11></Base11>
+      <Chapter2Less2></Chapter2Less2>
+      <Chapter2Less8 phrasesArr={phrasesArr} genPhrase={onClickGenPhrase} clearPhrases={clearPhrases}></Chapter2Less8>
     </div>
   );
 }
