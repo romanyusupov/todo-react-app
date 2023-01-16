@@ -1,24 +1,32 @@
 import React from "react";
 
+import { Routes, Route, Navigate } from "react-router-dom";
+
 import { Home } from "./pages/Home";
-import { Header } from "./components/Header";
 import { About } from "./pages/About";
-import { Footer } from "./components/Footer";
-import { FullPost } from "./pages/FullArticle"
+import { FullPost } from "./pages/FullArticle";
+import { NotFound } from "./pages/NotFound";
+import { Layout } from "./pages/Layout";
+import { Profile } from "./pages/Profile";
+import Login from "./pages/Login";
 
 function App() {
-  const pathname = window.location.pathname;
-
-  const articleNmb = pathname.substring(6, pathname.lastIndexOf("/") + 99);
-
   return (
     <>
-      <Header />
-      {pathname === "/" && <Home />}
-      {pathname === "/about" && <About />}
-      {pathname === "/login" && <h1>Логин</h1>}
-      {pathname.includes('/post/') && <FullPost id={articleNmb}/>}
-      <Footer />
+
+      <Routes>
+        <Route path='/' element={<Layout/>}>
+          <Route index element={<Home />} exact />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login/>} />
+          <Route path="/profile" element={<Profile/>} />
+          <Route path="/post/:dp" element={<FullPost />} />
+          <Route path="/not-found" element={<NotFound/>} />
+          <Route path="*" element={<Navigate to="/not-found"/>}/>
+          
+        </Route>
+      </Routes>
+
     </>
   );
 }
