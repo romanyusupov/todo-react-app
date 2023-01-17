@@ -9,6 +9,11 @@ body {
   margin: 0 auto;
 }
 
+.App {
+  display: flex;
+  justify-content: center;
+}
+
 .header {
   display: flex;
   align-items: center;
