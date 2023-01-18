@@ -3,10 +3,35 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object({
+  firstName: yup.string().min(2, 'Слишком короткое имя!'),
+  lastName: yup.string().min(2, 'Слишком короткая фамилия!'),
+  email: yup.string().email('Это не почта!').required('Это поле должно быть заполнено!'),
+  password: yup.string().min(6, 'Пароль должен быть не менее 6 символов!').max(32, 'Пароль должен быть не более 32 символов!'),
+}).required();
+
+console.log(schema);
 
 const App = () => {
-  const { register, handleSubmit, watch, formState } = useForm();
-  const onSubmit = (data) => console.log('ФОРМА', data);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState,
+    formState: { isSubmitSuccessful },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = (data) => console.log("ФОРМА", data);
+
+  React.useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <div className="App">
@@ -18,9 +43,7 @@ const App = () => {
         width="500px"
       >
         <TextField
-          {...register("firstName", {
-            required: "Это обязательное поле!",
-          })}
+          {...register("firstName")}
           helperText={
             formState.errors.firstName && formState.errors.firstName.message
           }
@@ -30,9 +53,7 @@ const App = () => {
           name="firstName"
         />
         <TextField
-          {...register("lastName", {
-            required: "Это обязательное поле!",
-          })}
+          {...register("lastName")}
           helperText={
             formState.errors.lastName && formState.errors.lastName.message
           }
@@ -42,13 +63,7 @@ const App = () => {
           name="lastName"
         />
         <TextField
-          {...register("email", {
-            required: "Это обязательное поле!",
-            pattern: {
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Неверно указан Email!",
-            },
-          })}
+          {...register("email")}
           helperText={formState.errors.email && formState.errors.email.message}
           error={!!formState.errors.email}
           //type="email"
@@ -73,7 +88,14 @@ const App = () => {
         <Button onClick={handleSubmit(onSubmit)} fullWidth variant="contained">
           Зарегистрироваться
         </Button>
-        <Button fullWidth variant="outlined">
+        <Button
+          type="button"
+          onClick={() => {
+            reset();
+          }}
+          fullWidth
+          variant="outlined"
+        >
           Очистить
         </Button>
       </Stack>
