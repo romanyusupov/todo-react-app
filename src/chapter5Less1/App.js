@@ -1,104 +1,63 @@
 import React from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-const schema = yup.object({
-  firstName: yup.string().min(2, 'Слишком короткое имя!'),
-  lastName: yup.string().min(2, 'Слишком короткая фамилия!'),
-  email: yup.string().email('Это не почта!').required('Это поле должно быть заполнено!'),
-  password: yup.string().min(6, 'Пароль должен быть не менее 6 символов!').max(32, 'Пароль должен быть не более 32 символов!'),
-}).required();
-
-console.log(schema);
+import PersonalInfoForm from "../chapter5Less6/forms/PersonalInfoForm";
+import ResultPage from "../chapter5Less6/forms/ResultPage";
+import AddressForm from "../chapter5Less6/forms/AdressForm";
+import { Routes, Route } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState,
-    formState: { isSubmitSuccessful },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
-  const onSubmit = (data) => console.log("ФОРМА", data);
+  const navigate = useNavigate();
 
-  React.useEffect(() => {
-    if (isSubmitSuccessful) {
-      reset();
-    }
-  }, [isSubmitSuccessful, reset]);
+  const [formData, setFormData] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    city: "",
+    street: "",
+    flatNumber: "",
+  });
+
+  const nextStep = (address) => {
+    navigate(address);
+  };
+
+  console.log("главная форма", formData);
 
   return (
     <div className="App">
-      <Stack
-        alignItems="center"
-        component="form"
-        direction="column"
-        spacing={2}
-        width="500px"
-      >
-        <TextField
-          {...register("firstName")}
-          helperText={
-            formState.errors.firstName && formState.errors.firstName.message
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <PersonalInfoForm setFormData={setFormData} nextStep={nextStep} />
           }
-          error={!!formState.errors.firstName}
-          label="Имя"
-          fullWidth
-          name="firstName"
+          exact
         />
-        <TextField
-          {...register("lastName")}
-          helperText={
-            formState.errors.lastName && formState.errors.lastName.message
+        <Route
+          path="/address"
+          element={
+            <AddressForm
+              setFormData={setFormData}
+              formData={formData}
+              nextStep={nextStep}
+            />
           }
-          error={!!formState.errors.lastName}
-          label="Фамилия"
-          fullWidth
-          name="lastName"
-        />
-        <TextField
-          {...register("email")}
-          helperText={formState.errors.email && formState.errors.email.message}
-          error={!!formState.errors.email}
-          //type="email"
-          label="Email"
-          fullWidth
-          name="email"
-        />
-        <TextField
-          {...register("password", {
-            required: "Это обязательное поле!",
-          })}
-          helperText={
-            formState.errors.password && formState.errors.password.message
-          }
-          error={!!formState.errors.password}
-          type="password"
-          label="Пароль"
-          fullWidth
-          name="password"
+          exact
         />
 
-        <Button onClick={handleSubmit(onSubmit)} fullWidth variant="contained">
-          Зарегистрироваться
-        </Button>
-        <Button
-          type="button"
-          onClick={() => {
-            reset();
-          }}
-          fullWidth
-          variant="outlined"
-        >
-          Очистить
-        </Button>
-      </Stack>
+        <Route
+          path="/result"
+          element={
+            <ResultPage
+              setFormData={setFormData}
+              formData={formData}
+              nextStep={nextStep}
+            />
+          }
+          exact
+        />
+      </Routes>
     </div>
   );
 };
