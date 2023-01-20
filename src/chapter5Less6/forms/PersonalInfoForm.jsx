@@ -22,8 +22,7 @@ const schema = yup
   })
   .required();
 
-const PersonalInfoForm = ({setFormData, nextStep}) => {
-
+const PersonalInfoForm = ({ setFormData, nextStep }) => {
   const {
     register,
     handleSubmit,
@@ -36,7 +35,7 @@ const PersonalInfoForm = ({setFormData, nextStep}) => {
 
   const onSubmit = (data) => {
     setFormData(data);
-    nextStep('address')
+    nextStep("address");
   };
 
   React.useEffect(() => {

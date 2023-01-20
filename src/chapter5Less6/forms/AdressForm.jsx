@@ -26,7 +26,8 @@ const AdressForm = ({setFormData, nextStep}) => {
     resolver: yupResolver(schema),
   });
 
-  
+
+
   const onSubmit = (data) => {
     setFormData((prev) => {
       return {...prev, ...data}
