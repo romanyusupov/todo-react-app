@@ -4,6 +4,7 @@ import axios from "axios";
 
 const App = () => {
   const [users, setUsers] = React.useState([]);
+  const [uploading, setUploading] = React.useState(false);
 
   const getUsers = async () => {
     const res = await axios.get(
@@ -29,6 +30,26 @@ const App = () => {
   const sendUser = () => {
     axios.post("https://63a5914c318b23efa79755f9.mockapi.io/users", fields);
   };
+
+  const uploadFile = async () => {
+    const fileElem = document.querySelector("#file");
+    const file = fileElem.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    setUploading(true);
+    
+    await axios({
+      method: "post",
+      url: "http://localhost:9999",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    setUploading(false);
+  };
+
+  
 
   return (
     <div
@@ -100,8 +121,42 @@ const App = () => {
           <Button onClick={sendUser} fullWidth variant="contained">
             Отправить пупсика на сервер
           </Button>
-        </Stack>
 
+          <br />
+          <br />
+
+          <input id="file" type="file" />
+
+          {uploading && (
+            <p>
+              <b>Идет загрузка</b>
+            </p>
+          )}
+
+          <Button
+            disabled={uploading}
+            onClick={uploadFile}
+            fullWidth
+            variant="contained"
+          >
+            upload
+          </Button>
+
+          {/* 
+          <Button
+            endIcon={<CloudDownloadIcon />}
+            variant="contained"
+            component="label"
+            onClick={uploadFile}
+          >
+            Отправить файл на сервер
+            <input hidden accept="image/*" multiple type="file" />
+          </Button> */}
+
+          {/* <Button width='200px' endIcon={<CloudDownloadIcon/>} onClick={uploadFile} variant="contained">
+            Отправить какашку на сервер
+          </Button> */}
+        </Stack>
       </Paper>
     </div>
   );
