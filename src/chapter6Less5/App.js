@@ -10,7 +10,7 @@ const App = () => {
     const res = await axios.get(
       "https://63a5914c318b23efa79755f9.mockapi.io/users"
     );
-    setUsers(res.data);
+    console.log(res.data);
   };
 
   const [fields, setFields] = React.useState({
