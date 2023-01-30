@@ -4,40 +4,55 @@ import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
 
 function App() {
-  const [obj, setObj] = React.useState({});
-  const [inputValue, setInputValue] = React.useState("");
-  const [isChecked, setIsChecked] = React.useState(false);
-  const [eventInput, setEventInput] = React.useState();
+  const [tabNumber, setTabNumber] = React.useState(0);
+  const tabCondition = ["all", "active", "completed"];
 
-  const onChecked = (event) => {
-    setIsChecked(event.target.checked);
-    setObj({
-      text: inputValue,
-      id: `${arr.length + 1}`,
-      completed: event.target.checked,
-    });
-  };
-
-  const onInputChange = (event) => {
-    setInputValue(event.target.value);
-    setObj({
-      text: event.target.value,
-      id: `${arr.length + 1}`,
-      completed: isChecked,
-    });
-  };
-
-
-  const reducer = (arr, action) => {
+  const reducer = (state, action) => {
     if (action.type === "ADD_TASK") {
-      setInputValue("");
-      setIsChecked(false);
-      return [...arr, obj];
+      return [
+        ...state,
+        {
+          text: action.payload.inputValue,
+          id: state.length + 1,
+          completed: action.payload.isChecked,
+        },
+      ];
     }
-    return arr;
+
+    if (action.type === "REM_TASK") {
+      return state.filter((task) => task.id !== action.payload);
+    }
+
+    if (action.type === "CHANGE_TASKS") {
+      return state.map((obj) => {
+        if (obj.id === action.payload) {
+          return {
+            ...obj,
+            completed: !obj.completed,
+          };
+        }
+        return obj;
+      });
+    }
+
+    if (action.type === "CHECK_ALL") {
+      return state.map((obj) => {
+        return {
+          ...obj,
+          completed: !obj.completed,
+        };
+      });
+    }
+
+    if (action.type === "CLEAR_ALL") {
+      return [];
+    }
+
+    
+    return state;
   };
 
-  const [arr, dispatch] = React.useReducer(reducer, [
+  const [state, dispatch] = React.useReducer(reducer, [
     {
       text: "Купить клей",
       id: "1",
@@ -46,7 +61,7 @@ function App() {
     {
       text: "Поздравить маму",
       id: "2",
-      completed: false,
+      completed: true,
     },
     {
       text: "Написать ТЗ",
@@ -55,10 +70,59 @@ function App() {
     },
   ]);
 
-  const addTask = () => {
+  const addTask = (isChecked, inputValue) => {
+    //console.log(isChecked, inputValue);
     dispatch({
       type: "ADD_TASK",
+      payload: {
+        isChecked,
+        inputValue,
+      },
     });
+  };
+
+  const removeTask = (id) => {
+    if (window.confirm("Удалить эту задачу?")) {
+      dispatch({
+        type: "REM_TASK",
+        payload: id,
+      });
+    }
+  };
+
+  const newChecked = (id) => {
+    dispatch({
+      type: "CHANGE_TASKS",
+      payload: id,
+    });
+  };
+
+  const checkAll = () => {
+    dispatch({
+      type: "CHECK_ALL",
+    });
+  };
+
+  const clearAll = () => {
+    if (window.confirm("Удалить всё?")) {
+      dispatch({
+        type: "CLEAR_ALL",
+      });
+    }
+  };
+
+  const itemSwitch = (event) => {
+    switch (event.target.id) {
+      case "completed":
+        setTabNumber(tabCondition.indexOf("completed"));
+        break;
+      case "active":
+        setTabNumber(tabCondition.indexOf("active"));
+        break;
+      default:
+        setTabNumber(tabCondition.indexOf("all"));
+        break;
+    }
   };
 
   return (
@@ -67,29 +131,39 @@ function App() {
         <Paper className="header" elevation={0}>
           <h4>Список задач</h4>
         </Paper>
-        <AddField
-          isChecked={isChecked}
-          onChecked={onChecked}
-          inputValue={inputValue}
-          onInputChange={onInputChange}
-          addTask={addTask}
-        />
+        <AddField sendInput={addTask} />
         <Divider />
-        <Tabs value={0}>
-          <Tab label="Все" />
-          <Tab label="Активные" />
-          <Tab label="Завершённые" />
+        <Tabs value={tabNumber}>
+          <Tab id="all" onClick={itemSwitch} label="Все" />
+          <Tab id="active" onClick={itemSwitch} label="Активные" />
+          <Tab id="completed" onClick={itemSwitch} label="Завершённые" />
         </Tabs>
         <Divider />
         <List>
-          {arr.map((obj) => (
-            <Item isChecked={obj.completed} key={obj.id} text={obj.text} />
-          ))}
+          {state
+            .filter((obj) => {
+              if (tabNumber === 0) {
+                return true;
+              } else if (tabNumber === 1) {
+                return obj.completed;
+              } else if (tabNumber === 2) {
+                return !obj.completed;
+              }
+            })
+            .map((obj) => (
+              <Item
+                sendDelId={() => removeTask(obj.id)}
+                onClickCheck={() => newChecked(obj.id)}
+                key={obj.id}
+                isChecked={obj.completed}
+                text={obj.text}
+              />
+            ))}
         </List>
         <Divider />
         <div className="check-buttons">
-          <Button>Отметить всё</Button>
-          <Button>Очистить</Button>
+          <Button onClick={checkAll}>Отметить всё</Button>
+          <Button onClick={clearAll}>Очистить</Button>
         </div>
       </Paper>
     </div>
