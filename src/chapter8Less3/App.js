@@ -2,73 +2,13 @@ import React from "react";
 import { Paper, Divider, Button, List, Tabs, Tab } from "@mui/material";
 import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
   const [tabNumber, setTabNumber] = React.useState(0);
   const tabCondition = ["all", "active", "completed"];
-
-  const reducer = (state, action) => {
-    if (action.type === "ADD_TASK") {
-      return [
-        ...state,
-        {
-          text: action.payload.inputValue,
-          id: state.length + 1,
-          completed: action.payload.isChecked,
-        },
-      ];
-    }
-
-    if (action.type === "REM_TASK") {
-      return state.filter((task) => task.id !== action.payload);
-    }
-
-    if (action.type === "CHANGE_TASKS") {
-      return state.map((obj) => {
-        if (obj.id === action.payload) {
-          return {
-            ...obj,
-            completed: !obj.completed,
-          };
-        }
-        return obj;
-      });
-    }
-
-    if (action.type === "CHECK_ALL") {
-      return state.map((obj) => {
-        return {
-          ...obj,
-          completed: !obj.completed,
-        };
-      });
-    }
-
-    if (action.type === "CLEAR_ALL") {
-      return [];
-    }
-
-    
-    return state;
-  };
-
-  const [state, dispatch] = React.useReducer(reducer, [
-    {
-      text: "Купить клей",
-      id: "1",
-      completed: false,
-    },
-    {
-      text: "Поздравить маму",
-      id: "2",
-      completed: true,
-    },
-    {
-      text: "Написать ТЗ",
-      id: "3",
-      completed: false,
-    },
-  ]);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
 
   const addTask = (isChecked, inputValue) => {
     //console.log(isChecked, inputValue);
