@@ -2,13 +2,111 @@ import React from "react";
 import { Paper, Divider, Button, List, Tabs, Tab } from "@mui/material";
 import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
-import { useSelector, useDispatch } from "react-redux";
 
 function App() {
   const [tabNumber, setTabNumber] = React.useState(0);
   const tabCondition = ["all", "active", "completed"];
-  const dispatch = useDispatch();
-  const state = useSelector((state) => state);
+
+  const reducer = (state, action) => {
+    if (action.type === "ADD_TASK") {
+      return {
+        ...state,
+        tasks: [
+          ...state.tasks,
+          {
+            text: action.payload.inputValue,
+            id: state.tasks.length + 1,
+            completed: action.payload.isChecked,
+          },
+        ],
+      };
+    }
+
+    if (action.type === "REM_TASK") {
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
+    }
+
+    if (action.type === "CHANGE_TASKS") {
+      return {
+        ...state,
+        tasks: state.tasks.map((obj) => {
+          if (obj.id === action.payload) {
+            return {
+              ...obj,
+              completed: !obj.completed,
+            };
+          }
+          return obj;
+        }),
+      };
+    }
+
+    if (action.type === "CHECK_ALL") {
+      console.log(
+        state.tasks.length,
+        state.tasks.filter((obj) => obj.completed).length
+      );
+      return {
+        ...state,
+        tasks: state.tasks.map((obj) => {
+          if (
+            state.tasks.length !==
+            state.tasks.filter((obj) => obj.completed).length
+          ) {
+            return {
+              ...obj,
+              completed: true,
+            };
+          } else {
+            return {
+              ...obj,
+              completed: !obj.completed,
+            };
+          }
+        }),
+      };
+    }
+
+    if (action.type === "CLEAR_ALL") {
+      return {
+        ...state,
+        tasks: [],
+      };
+    }
+
+    if (action.type === "TAB_CLICK") {
+      return {
+        ...state,
+        filterBy: action.payload,
+      };
+    }
+
+    return state;
+  };
+
+  const [state, dispatch] = React.useReducer(reducer, {
+    filterBy: "all",
+    tasks: [
+      {
+        text: "Купить клей",
+        id: "1",
+        completed: false,
+      },
+      {
+        text: "Поздравить маму",
+        id: "2",
+        completed: true,
+      },
+      {
+        text: "Написать ТЗ",
+        id: "3",
+        completed: false,
+      },
+    ],
+  });
 
   const addTask = (isChecked, inputValue) => {
     //console.log(isChecked, inputValue);
@@ -51,18 +149,14 @@ function App() {
     }
   };
 
-  const itemSwitch = (event) => {
-    switch (event.target.id) {
-      case "completed":
-        setTabNumber(tabCondition.indexOf("completed"));
-        break;
-      case "active":
-        setTabNumber(tabCondition.indexOf("active"));
-        break;
-      default:
-        setTabNumber(tabCondition.indexOf("all"));
-        break;
-    }
+  const tabIndex = ["all", "active", "completed"];
+
+  const onTabClick = (index) => {
+    const filterIndex = tabIndex[index];
+    dispatch({
+      type: "TAB_CLICK",
+      payload: filterIndex,
+    });
   };
 
   return (
@@ -73,20 +167,23 @@ function App() {
         </Paper>
         <AddField sendInput={addTask} />
         <Divider />
-        <Tabs value={tabNumber}>
-          <Tab id="all" onClick={itemSwitch} label="Все" />
-          <Tab id="active" onClick={itemSwitch} label="Активные" />
-          <Tab id="completed" onClick={itemSwitch} label="Завершённые" />
+        <Tabs
+          onChange={(_, index) => onTabClick(index)}
+          value={tabIndex.indexOf(state.filterBy)}
+        >
+          <Tab id="all" label="Все" />
+          <Tab id="active" label="Активные" />
+          <Tab id="completed" label="Завершённые" />
         </Tabs>
         <Divider />
         <List>
-          {state
+          {state.tasks
             .filter((obj) => {
-              if (tabNumber === 0) {
+              if (state.filterBy === "all") {
                 return true;
-              } else if (tabNumber === 1) {
+              } else if (state.filterBy === "completed") {
                 return obj.completed;
-              } else if (tabNumber === 2) {
+              } else if (state.filterBy === "active") {
                 return !obj.completed;
               }
             })
