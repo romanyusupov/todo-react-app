@@ -3,6 +3,7 @@ import { Paper, Divider, Button, List, Tabs, Tab } from "@mui/material";
 import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
 import { useSelector, useDispatch } from "react-redux";
+import Filter from "./components/Filter";
 
 function App() {
   const dispatch = useDispatch();
@@ -49,15 +50,7 @@ function App() {
     }
   };
 
-  const tabIndex = ["all", "active", "completed"];
 
-  const onTabClick = (index) => {
-    const filterIndex = tabIndex[index];
-    dispatch({
-      type: "TAB_CLICK",
-      payload: filterIndex,
-    });
-  };
 
   return (
     <div className="App">
@@ -67,14 +60,7 @@ function App() {
         </Paper>
         <AddField sendInput={addTask} />
         <Divider />
-        <Tabs
-          onChange={(_, index) => onTabClick(index)}
-          value={tabIndex.indexOf(state.filterBy)}
-        >
-          <Tab id="all" label="Все" />
-          <Tab id="active" label="Активные" />
-          <Tab id="completed" label="Завершённые" />
-        </Tabs>
+        <Filter />
         <Divider />
         <List>
           {state.tasks
