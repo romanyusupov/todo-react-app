@@ -4,53 +4,41 @@ import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
 import { useSelector, useDispatch } from "react-redux";
 import Filter from "./components/Filter";
+import {
+  addTaskAction,
+  removeTaskAction,
+  newCheckedAction,
+  checkAllAction,
+  clearAllAction,
+} from "./redux/actions/tasks";
 
 function App() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
 
   const addTask = (isChecked, inputValue) => {
-    //console.log(isChecked, inputValue);
-    dispatch({
-      type: "ADD_TASK",
-      payload: {
-        isChecked,
-        inputValue,
-      },
-    });
+    dispatch(addTaskAction(isChecked, inputValue));
   };
 
   const removeTask = (id) => {
     if (window.confirm("Удалить эту задачу?")) {
-      dispatch({
-        type: "REM_TASK",
-        payload: id,
-      });
+      dispatch(removeTaskAction(id));
     }
   };
 
   const newChecked = (id) => {
-    dispatch({
-      type: "CHANGE_TASKS",
-      payload: id,
-    });
+    dispatch(newCheckedAction(id));
   };
 
   const checkAll = () => {
-    dispatch({
-      type: "CHECK_ALL",
-    });
+    dispatch(checkAllAction());
   };
 
   const clearAll = () => {
     if (window.confirm("Удалить всё?")) {
-      dispatch({
-        type: "CLEAR_ALL",
-      });
+      dispatch(clearAllAction());
     }
   };
-
-
 
   return (
     <div className="App">
@@ -65,11 +53,11 @@ function App() {
         <List>
           {state.tasks
             .filter((obj) => {
-              if (state.filterBy === "all") {
+              if (state.filter.filterBy === "all") {
                 return true;
-              } else if (state.filterBy === "completed") {
+              } else if (state.filter.filterBy === "completed") {
                 return obj.completed;
-              } else if (state.filterBy === "active") {
+              } else if (state.filter.filterBy === "active") {
                 return !obj.completed;
               }
             })
