@@ -10,11 +10,16 @@ import {
   newCheckedAction,
   checkAllAction,
   clearAllAction,
+  fetchTasksAction,
 } from "./redux/actions/tasks";
 
 function App() {
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
+
+  React.useEffect(() => {
+    dispatch(fetchTasksAction());
+  }, []);
 
   const addTask = (isChecked, inputValue) => {
     dispatch(addTaskAction(isChecked, inputValue));

@@ -4,3 +4,4 @@ export const onTabClickAction = (filterIndex) => {
     payload: filterIndex,
   }
 }
+

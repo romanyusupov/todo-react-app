@@ -1,23 +1,10 @@
-const initialState = [
-  {
-    text: "Купить клей",
-    id: "1",
-    completed: false,
-  },
-  {
-    text: "Поздравить маму",
-    id: "2",
-    completed: true,
-  },
-  {
-    text: "Написать ТЗ",
-    id: "3",
-    completed: false,
-  },
-];
+let initialState = [];
 
 export function taskReducer(state = initialState, action) {
   switch (action.type) {
+    case 'SET_TASKS':
+      return action.payload;
+      
     case "ADD_TASK":
       return [
         ...state,
@@ -43,10 +30,7 @@ export function taskReducer(state = initialState, action) {
 
     case "CHECK_ALL":
       return state.map((obj) => {
-        if (
-          state.length !==
-          state.filter((obj) => obj.completed).length
-        ) {
+        if (state.length !== state.filter((obj) => obj.completed).length) {
           return {
             ...obj,
             completed: true,
