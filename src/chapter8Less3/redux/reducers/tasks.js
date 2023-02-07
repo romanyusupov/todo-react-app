@@ -1,11 +1,35 @@
-let initialState = [];
+let initialState = [
+  {
+    text: "Купить клей",
+    id: "1",
+    completed: false,
+  },
+  {
+    text: "Поздравить маму",
+    id: "2",
+    completed: true,
+  },
+  {
+    text: "Написать ТЗ",
+    id: "3",
+    completed: false,
+  },
+];
 
 export function taskReducer(state = initialState, action) {
   switch (action.type) {
-    case 'SET_TASKS':
+    case "SET_TASKS":
       return action.payload;
-      
+
     case "ADD_TASK":
+      fetch("https://63a5914c318b23efa79755f9.mockapi.io/users", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(action.payload),
+      });
       return [
         ...state,
         {

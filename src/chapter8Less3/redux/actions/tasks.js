@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const fetchTasksAction = () => async (dispatch) => {
   try {
     const res = await fetch(
@@ -25,6 +27,7 @@ export const addTaskAction = (completed, text) => {
 };
 
 export const removeTaskAction = (id) => {
+  axios.delete(`https://63a5914c318b23efa79755f9.mockapi.io/users/${id}`)
   return {
     type: "REM_TASK",
     payload: id,

@@ -10,22 +10,7 @@ const rootReducer = combineReducers({
   tasks: taskReducer,
 });
 
-const log = (store) => (next) => (action) => {
-  
 
-  if (action.type === "ADD_TASK") {
-    fetch("https://63a5914c318b23efa79755f9.mockapi.io/users", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(action.payload),
-    });
-  }
-  next(action);
-};
-
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk, log)));
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
 
 export default store;
