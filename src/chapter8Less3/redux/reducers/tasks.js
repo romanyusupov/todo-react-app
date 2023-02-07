@@ -1,20 +1,16 @@
-let initialState = [
-  {
-    text: "Купить клей",
-    id: "1",
-    completed: false,
-  },
-  {
-    text: "Поздравить маму",
-    id: "2",
-    completed: true,
-  },
-  {
-    text: "Написать ТЗ",
-    id: "3",
-    completed: false,
-  },
-];
+import axios from "axios";
+
+let initialState = [];
+
+const checkOnServer = async (isTrue, obj) => {
+  await axios
+    .put(`https://63a5914c318b23efa79755f9.mockapi.io/users/${obj.id}`, {
+      ...obj,
+      completed: isTrue,
+    })
+    .then()
+    .catch(error => console.error('There was an error!', error));
+};
 
 export function taskReducer(state = initialState, action) {
   switch (action.type) {
@@ -39,9 +35,19 @@ export function taskReducer(state = initialState, action) {
         },
       ];
     case "REM_TASK":
+      axios.delete(
+        `https://63a5914c318b23efa79755f9.mockapi.io/users/${action.payload}`
+      );
       return state.filter((task) => task.id !== action.payload);
 
     case "CHANGE_TASKS":
+      axios.put(
+        `https://63a5914c318b23efa79755f9.mockapi.io/users/${action.payload}`,
+        {
+          ...state[action.payload - 1],
+          completed: !state[action.payload - 1].completed,
+        }
+      );
       return state.map((obj) => {
         if (obj.id === action.payload) {
           return {
@@ -55,14 +61,16 @@ export function taskReducer(state = initialState, action) {
     case "CHECK_ALL":
       return state.map((obj) => {
         if (state.length !== state.filter((obj) => obj.completed).length) {
+          checkOnServer(true, obj);
           return {
             ...obj,
             completed: true,
           };
         } else {
+          checkOnServer(false, obj);
           return {
             ...obj,
-            completed: !obj.completed,
+            completed: false,
           };
         }
       });

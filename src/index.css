@@ -12,22 +12,12 @@
 
 body {
   /* background-color: #141c2f; */
+
   font-family: 'Source Code Pro', monospace;
   font-weight: 400;
   color: var(--main-color);
-  margin: 0 auto !important; 
+  margin: 0 auto; 
   background-color: #141c2f !important;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: rgba(0, 0, 0, 0.05);
-  max-width: 960px;
-  padding-top: 30px;
-  margin: 0 auto;
 }
 
 .App {

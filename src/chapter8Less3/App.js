@@ -1,5 +1,5 @@
 import React from "react";
-import { Paper, Divider, Button, List, Tabs, Tab } from "@mui/material";
+import { Paper, Divider, Button, List } from "@mui/material";
 import { AddField } from "./components/AddField";
 import { Item } from "./components/Item";
 import { useSelector, useDispatch } from "react-redux";
