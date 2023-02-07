@@ -9,9 +9,9 @@ export function taskReducer(state = initialState, action) {
       return [
         ...state,
         {
-          text: action.payload.inputValue,
+          text: action.payload.text,
           id: state.length + 1,
-          completed: action.payload.isChecked,
+          completed: action.payload.completed,
         },
       ];
     case "REM_TASK":

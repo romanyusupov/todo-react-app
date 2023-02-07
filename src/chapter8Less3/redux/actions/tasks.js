@@ -1,8 +1,9 @@
 export const fetchTasksAction = () => async (dispatch) => {
   try {
-    const res = await fetch("http://localhost:3002/todo/tasks");
+    const res = await fetch(
+      "https://63a5914c318b23efa79755f9.mockapi.io/users"
+    );
     const data = await res.json();
-    console.log(data);
     dispatch({
       type: "SET_TASKS",
       payload: data,
@@ -13,12 +14,12 @@ export const fetchTasksAction = () => async (dispatch) => {
   }
 };
 
-export const addTaskAction = (isChecked, inputValue) => {
+export const addTaskAction = (completed, text) => {
   return {
     type: "ADD_TASK",
     payload: {
-      isChecked,
-      inputValue,
+      completed,
+      text,
     },
   };
 };
