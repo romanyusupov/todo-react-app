@@ -2,24 +2,29 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import store from "./chapter8Less3/redux";
+import { createStore, combineReducers } from "redux";
+import { filterReducer } from "./redux/reducers/filter";
+import { taskReducer } from "./redux/reducers/tasks";
+import { applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "@redux-devtools/extension";
 
-//import App from './chapter1Less9/App';
-//import App from './chapter1Less11/App';
-//import App from "./chapter2Less2/App";
-//import App from "./chapter2Less8/App";
-//import App from "./chapter3Less5/App";
-//import App from "./chapter4Less3/App";
-//import App from "./chapter5Less1/App";
-//import App from "./chapter6Less1/App";
-//import App from "./chapter6Less5/App";
-//import App from "./chapter6Less6/App";
-import App from "./chapter8Less3/App";
+import App from "./App";
 
 import "./index.css";
 import "./style.scss";
 import "./index.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
+
+const rootReducer = combineReducers({
+  filter: filterReducer,
+  tasks: taskReducer,
+});
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(thunk))
+);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -31,3 +36,5 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+export default store;
