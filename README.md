@@ -1,3 +1,7 @@
+To test app go to https://todo-react-app-orpin.vercel.app/
+Please add new tasks, remove, check, uncheck slowly, because my app connect to server mockapi. How to make everything work quickly and without failures, I still do not know. I continue to study! 
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
