@@ -1,5 +1,5 @@
 To test app go to https://todo-react-app-orpin.vercel.app/
-Please add new tasks, remove, check, uncheck slowly, because my app connect to server mockapi. How to make everything work quickly and without failures, I still do not know. I continue to study! 
+Please add new tasks, remove, check, uncheck slowly, because my app connect to server mockapi. If you click fast, there will be a lot of crashes! So far I don't know how to fix it :) I will continue to study and as soon as I find out, I will fix all these bugs :)
 
 
 # Getting Started with Create React App
